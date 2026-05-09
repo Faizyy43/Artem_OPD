@@ -1,0 +1,70 @@
+<div class="card">
+  <h2 class="card-title">Register New Patient</h2>
+  <form (ngSubmit)="onSubmit()" #patientForm="ngForm">
+    <div class="grid grid-cols-2">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" class="form-control" name="name" [(ngModel)]="newPatient.name" required placeholder="Enter patient's full name">
+      </div>
+      
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" class="form-control" name="phoneNumber" [(ngModel)]="newPatient.phoneNumber" required placeholder="Enter phone number">
+      </div>
+      
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input type="number" id="age" class="form-control" name="age" [(ngModel)]="newPatient.age" required placeholder="Enter age">
+      </div>
+      
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" class="form-control" name="gender" [(ngModel)]="newPatient.gender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top: 1rem; text-align: right;">
+      <button type="submit" class="btn btn-primary" [disabled]="!patientForm.form.valid">Register Patient</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+    <h2 class="card-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Patient List</h2>
+    <div style="display: flex; gap: 0.5rem; max-width: 300px; width: 100%;">
+      <input type="text" class="form-control" name="searchQuery" placeholder="Search by name or phone..." [(ngModel)]="searchQuery" (keyup.enter)="onSearch()">
+      <button class="btn btn-primary" (click)="onSearch()">Search</button>
+    </div>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Phone Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let patient of patients">
+          <td>#{{ patient.id }}</td>
+          <td style="font-weight: 500;">{{ patient.name }}</td>
+          <td>{{ patient.age }}</td>
+          <td>{{ patient.gender }}</td>
+          <td>{{ patient.phoneNumber }}</td>
+        </tr>
+        <tr *ngIf="patients.length === 0">
+          <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+            No patients registered yet.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

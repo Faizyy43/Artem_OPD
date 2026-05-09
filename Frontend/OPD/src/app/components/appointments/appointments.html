@@ -1,0 +1,62 @@
+<div class="card">
+  <h2 class="card-title">Book New Appointment</h2>
+  <form (ngSubmit)="onSubmit()" #appointmentForm="ngForm">
+    <div class="grid grid-cols-2">
+      <div class="form-group">
+        <label for="patientId">Select Patient</label>
+        <select id="patientId" class="form-control" name="patientId" [(ngModel)]="newAppointment.patientId" required>
+          <option [ngValue]="null" disabled>-- Choose a patient --</option>
+          <option *ngFor="let patient of patients" [ngValue]="patient.id">{{ patient.name }} ({{ patient.phoneNumber }})</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="doctorName">Doctor Name</label>
+        <input type="text" id="doctorName" class="form-control" name="doctorName" [(ngModel)]="newAppointment.doctorName" required placeholder="Enter doctor's name">
+      </div>
+      
+      <div class="form-group">
+        <label for="appointmentDate">Appointment Date & Time</label>
+        <input type="datetime-local" id="appointmentDate" class="form-control" name="appointmentDate" [(ngModel)]="newAppointment.appointmentDate" required>
+      </div>
+    </div>
+    <div style="margin-top: 1rem; text-align: right;">
+      <button type="submit" class="btn btn-primary" [disabled]="!appointmentForm.form.valid">Book Appointment</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2 class="card-title">Today's Appointments</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Patient Name</th>
+          <th>Doctor</th>
+          <th>Date & Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let apt of appointments">
+          <td>#{{ apt.id }}</td>
+          <td style="font-weight: 500;">{{ apt.patient?.name }}</td>
+          <td>{{ apt.doctorName }}</td>
+          <td>{{ apt.appointmentDate | date:'short' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{'badge-scheduled': apt.status === 'SCHEDULED', 'badge-completed': apt.status === 'COMPLETED'}">
+              {{ apt.status }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="appointments.length === 0">
+          <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+            No appointments scheduled for today.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

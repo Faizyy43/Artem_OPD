@@ -1,0 +1,79 @@
+<div class="card">
+  <h2 class="card-title">Consultation Form</h2>
+  <form (ngSubmit)="onSubmit()" #consultationForm="ngForm">
+    <div class="grid grid-cols-2">
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label for="appointmentId">Select Appointment (Scheduled)</label>
+        <select id="appointmentId" class="form-control" name="appointmentId" [(ngModel)]="newConsultation.appointmentId" required>
+          <option [ngValue]="null" disabled>-- Choose a pending appointment --</option>
+          <option *ngFor="let apt of todayAppointments" [ngValue]="apt.id">
+            Patient: {{ apt.patient?.name }} | Dr: {{ apt.doctorName }} | Time: {{ apt.appointmentDate | date:'shortTime' }}
+          </option>
+        </select>
+        <small *ngIf="todayAppointments.length === 0" style="color: var(--text-muted); display: block; margin-top: 0.5rem;">
+          No scheduled appointments available today.
+        </small>
+      </div>
+      
+      <div class="form-group">
+        <label for="vitals1">Vitals 1 (e.g. Blood Pressure)</label>
+        <input type="text" id="vitals1" class="form-control" name="vitals1" [(ngModel)]="newConsultation.vitals1" required placeholder="e.g., 120/80 mmHg">
+      </div>
+      
+      <div class="form-group">
+        <label for="vitals2">Vitals 2 (e.g. Temperature)</label>
+        <input type="text" id="vitals2" class="form-control" name="vitals2" [(ngModel)]="newConsultation.vitals2" required placeholder="e.g., 98.6 F">
+      </div>
+      
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label for="notes">Doctor's Notes</label>
+        <textarea id="notes" class="form-control" name="notes" [(ngModel)]="newConsultation.notes" rows="4" placeholder="Enter consultation notes, diagnosis, or prescription..."></textarea>
+      </div>
+    </div>
+    <div style="margin-top: 1rem; text-align: right;">
+      <button type="submit" class="btn btn-success" [disabled]="!consultationForm.form.valid">Mark Completed & Save</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2 class="card-title">View Patient Consultations</h2>
+  <div class="form-group" style="max-width: 400px; display: flex; gap: 1rem;">
+    <select class="form-control" name="searchPatientId" [(ngModel)]="searchPatientId">
+      <option [ngValue]="null" disabled>-- Select a Patient --</option>
+      <option *ngFor="let p of patients" [ngValue]="p.id">{{ p.name }} (ID: {{ p.id }})</option>
+    </select>
+    <button type="button" class="btn btn-primary" (click)="loadPatientConsultations()" [disabled]="!searchPatientId">View</button>
+  </div>
+  
+  <div class="table-wrapper" style="margin-top: 1.5rem;" *ngIf="searchPatientId">
+    <table>
+      <thead>
+        <tr>
+          <th>Consultation ID</th>
+          <th>Date</th>
+          <th>Doctor</th>
+          <th>Vitals</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cons of selectedPatientConsultations">
+          <td>#{{ cons.id }}</td>
+          <td>{{ cons.appointment?.appointmentDate | date:'mediumDate' }}</td>
+          <td>{{ cons.appointment?.doctorName }}</td>
+          <td>
+            <div><strong>V1:</strong> {{ cons.vitals1 }}</div>
+            <div><strong>V2:</strong> {{ cons.vitals2 }}</div>
+          </td>
+          <td>{{ cons.notes || 'N/A' }}</td>
+        </tr>
+        <tr *ngIf="selectedPatientConsultations.length === 0">
+          <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+            No consultations found for this patient.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
